@@ -1,0 +1,49 @@
+﻿-- Total de Clientes
+DEFINE
+    MEASURE d_Customers[TotalClientes] = COUNTROWS(d_Customers)
+
+-- Tasa de Respuesta General
+DEFINE
+    MEASURE f_Campaign[TasaRespuestaGeneral] =
+    DIVIDE(
+        COUNTROWS(FILTER(f_Campaign, f_Campaign[Response] = 1)),
+        COUNTROWS(f_Campaign)
+    )
+
+-- Gasto Total en Productos
+DEFINE
+    MEASURE f_Campaign[GastoTotalProductos] = 
+    SUMX(
+        d_Products, 
+        d_Products[Fish] +
+        d_Products[Fruits] +
+        d_Products[Gold] +
+        d_Products[Meat] +
+        d_Products[Sweets] +
+        d_Products[Wines]
+    )
+
+-- Promedio de Ingresos por Cliente
+DEFINE
+    MEASURE d_Customers[PromedioIngresos] = AVERAGE(d_Customers[Income])
+
+-- Número de Compras por Tipo
+DEFINE
+    MEASURE d_Purchases[NumComprasPorTipo] = 
+    SUM( d_Purchases[NumDealsPurchases] + 
+        d_Purchases[NumCatalogPurchases] + 
+        d_Purchases[NumStorePurchases] + 
+        d_Purchases[NumWebPurchases]
+    )
+
+EVALUATE
+
+SUMMARIZE(
+    d_Customers,
+    d_Customers[ID],
+    "TotalClientes", [TotalClientes],
+    "TasaRespuestaGeneral", [TasaRespuestaGeneral],
+    "GastoTotalProductos", [GastoTotalProductos],
+    "PromedioIngresos", [PromedioIngresos],
+    "NumComprasPorTipo", [NumComprasPorTipo]
+)
